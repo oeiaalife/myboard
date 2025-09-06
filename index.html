@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Minimalist Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fdfdfd;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    h2 {
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #444;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .widget {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+    }
+
+    .calendar {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .calendar .category {
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    /* Muted pastel color codes */
+    .fitness { background: #d6f5e3; }
+    .books { background: #fce3f0; }
+    .shadowwork { background: #e4e9fc; }
+    .supplements { background: #fdf1d6; }
+    .fasting { background: #f9e8d6; }
+    .programs { background: #e9f9f2; }
+    .curriculum { background: #f3e8fd; }
+
+    /* Progress bars */
+    .progress-bar {
+      height: 16px;
+      background: #eee;
+      border-radius: 8px;
+      margin: 5px 0;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 8px;
+      background: #a8d8ea;
+      width: 0;
+      transition: width 0.5s ease;
+    }
+
+    /* To-Do List */
+    ul {
+      padding-left: 20px;
+    }
+
+    li {
+      margin: 6px 0;
+    }
+
+    /* Menstrual Cycle Highlight */
+    .cycle-phase {
+      font-weight: bold;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .menstrual { background: #ffd6d6; }
+    .follicular { background: #e0f7d6; }
+    .ovulation { background: #d6ecff; }
+    .luteal { background: #fff0d6; }
+
+    textarea {
+      width: 100%;
+      height: 120px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      resize: none;
+      font-family: inherit;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌸 My Minimalist Dashboard</h1>
+
+  <div class="dashboard">
+    <!-- Calendar -->
+    <div class="widget">
+      <h2>Main Calendar</h2>
+      <div class="calendar">
+        <div class="category fitness">🏋️ Fitness</div>
+        <div class="category books">📚 Book Reading</div>
+        <div class="category shadowwork">🌓 Shadow Work</div>
+        <div class="category supplements">💊 Supplements</div>
+        <div class="category fasting">⏳ Fasting</div>
+        <div class="category programs">📂 Programs</div>
+        <div class="category curriculum">🎓 Curriculum & Learning</div>
+      </div>
+    </div>
+
+    <!-- Goals & Progress -->
+    <div class="widget">
+      <h2>Goals & Progress</h2>
+      <p>Daily Fitness: <span>3/5</span></p>
+      <div class="progress-bar"><div class="progress-bar-fill" style="width:60%"></div></div>
+      <p>Reading Progress: <span>120/300 pages</span></p>
+      <div class="progress-bar"><div class="progress-bar-fill" style="width:40%"></div></div>
+    </div>
+
+    <!-- Books of the Month -->
+    <div class="widget">
+      <h2>Books of the Month</h2>
+      <ul>
+        <li>Atomic Habits – ✅ 80%</li>
+        <li>The Untethered Soul – 📖 20%</li>
+      </ul>
+    </div>
+
+    <!-- Fitness Log -->
+    <div class="widget">
+      <h2>Fitness Log</h2>
+      <ul>
+        <li>Mon: Full Body – Done</li>
+        <li>Wed: Cardio – Pending</li>
+      </ul>
+    </div>
+
+    <!-- Study Sessions -->
+    <div class="widget">
+      <h2>Study Sessions</h2>
+      <ul>
+        <li>Pomodoro #1 – ✅</li>
+        <li>Pomodoro #2 – ⏳</li>
+      </ul>
+    </div>
+
+    <!-- Recipes -->
+    <div class="widget">
+      <h2>Recipes of the Month</h2>
+      <ul>
+        <li>🥗 Buddha Bowl</li>
+        <li>🍝 Creamy Pasta</li>
+      </ul>
+    </div>
+
+    <!-- Menstrual Cycle Tracker -->
+    <div class="widget">
+      <h2>Cycle Tracker</h2>
+      <div id="cyclePhase" class="cycle-phase"></div>
+    </div>
+
+    <!-- To-Do List -->
+    <div class="widget">
+      <h2>Important To-Do</h2>
+      <ul>
+        <li>Buy Supplements</li>
+        <li>Organize Study Notes</li>
+        <li>Book Gym Class</li>
+      </ul>
+    </div>
+
+    <!-- Random Notes -->
+    <div class="widget">
+      <h2>Random Notes</h2>
+      <textarea placeholder="Write down spontaneous ideas here..."></textarea>
+    </div>
+  </div>
+
+  <script>
+    // Menstrual Cycle Calculator
+    const pastCycles = ["2024-05-29", "2024-06-28", "2024-07-26", "2024-08-28"];
+    const avgCycleLength = 30;
+
+    function getCyclePhase() {
+      const lastCycle = new Date(pastCycles[pastCycles.length - 1]);
+      const today = new Date();
+      const diffDays = Math.floor((today - lastCycle) / (1000 * 60 * 60 * 24));
+
+      let phase = "";
+      let text = "";
+      if (diffDays <= 5) {
+        phase = "menstrual";
+        text = "🌺 Menstrual Phase";
+      } else if (diffDays <= 13) {
+        phase = "follicular";
+        text = "🌱 Follicular Phase";
+      } else if (diffDays <= 16) {
+        phase = "ovulation";
+        text = "🌸 Ovulation Phase";
+      } else if (diffDays <= avgCycleLength) {
+        phase = "luteal";
+        text = "🌙 Luteal Phase";
+      } else {
+        phase = "menstrual";
+        text = "🌺 Menstrual Phase (new cycle)";
+      }
+
+      const el = document.getElementById("cyclePhase");
+      el.textContent = text;
+      el.className = "cycle-phase " + phase;
+    }
+
+    getCyclePhase();
+  </script>
+</body>
+</html>
